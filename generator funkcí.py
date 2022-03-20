@@ -26,31 +26,43 @@ class Application(tk.Tk):
         self.btn.pack()
         self.lbl2 = tk.Label(self, text="Nastavení frekvence:")
         self.lbl2.pack()
-        self.entry = Entry(self)
-        self.entry.pack()
-        self.entry.focus_set()
-
-        def volanafunkce():
-            print(self.entry.get())
+        self.f = Entry(self)
+        self.f.pack()
+        self.f.focus_set()
 
         
+
+        def frekvence():
+            try:
+                f1 = open("frekvence.txt", "w")
+            except FileNotFoundError:
+                print("Soubor nebyl nalezen")
+
+            text = (self.f.get())
+            f1.write(text)
+            print(self.f.get())
+            f1.close()
             
 
-        self.btn3 = tk.Button(self, text="zapiš", command=volanafunkce)
+        self.btn3 = tk.Button(self, text="zapiš", command=frekvence)
         self.btn3.pack()
-
-
-        
+       
 
     def graf(self):
+        #TIME
         sample_rate = 44100
-        t = np.arange(0,1,1/sample_rate)        #Time
-        f = self.entry.get()          #Hz
+        t = np.arange(0,1,1/sample_rate)
 
+        #FREQUENCY        
+        f1 = open("frekvence.txt", "r")         
+        f = f1.read()
+        f = np.int16(f)                         
+        f1.close()
+                                           
         #SIGNALS
-        signal = np.sin(2*np.pi*f*t)            #Sinus
+        #signal = np.sin(2*np.pi*f*t)            #Sinus
         #signal = np.cos(2*np.pi*f*t)           #Cosinus
-        #signal = (np.mod(f*t,1) < 0.5)*2.0-1   #Rectangle
+        signal = (np.mod(f*t,1) < 0.5)*2.0-1   #Rectangle
 
         noise = np.random.randn(*signal.shape)
 
@@ -68,10 +80,10 @@ class Application(tk.Tk):
         signal = np.int16(signal)
         wavfile.write("file.wav", sample_rate, signal)
 
-        ####PLOT SIGNAL####
+        ####PLOT SIGNAL
         plt.plot(t, signal,"black")
         plt.plot(t, signal+noise,"blue");
-        plt.ylabel("napětí[V]")
+        plt.ylabel("napětí[mV]")
         plt.xlabel("čas[s]")
         plt.title("Signál")
         plt.show()
