@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 import pylab as plt
@@ -43,7 +44,7 @@ class Application(tk.Tk):
         x = self.amplituda * (plt.sin(2*pi*self.frekvence*t ))
 
         plt.plot(t,x)
-        plt.title("Cosinus")
+        plt.title("")
         plt.xlabel("t [s]")
         plt.ylabel("u V]")
         plt.grid()
