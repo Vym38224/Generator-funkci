@@ -44,7 +44,7 @@ class Application(tk.Tk):
         x = self.amplituda * (plt.sin(2*pi*self.frekvence*t ))
 
         plt.plot(t,x)
-        plt.title("")
+        plt.title("generování sihnálu")
         plt.xlabel("t [s]")
         plt.ylabel("u V]")
         plt.grid()
