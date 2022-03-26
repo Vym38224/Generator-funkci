@@ -1,12 +1,17 @@
 
 #!/usr/bin/env python3
 
-import pylab as plt
+import matplotlib.pyplot as plt
 import tkinter as tk
+import numpy as np
+
 
 from pylab import linspace, pi, plot,sin,cos, show,grid,legend
 from os.path import basename, splitext
 from tkinter import *
+from scipy.io import wavfile
+
+
 
 class Application(tk.Tk):
     name = basename(splitext(basename(__file__.capitalize()))[0])
@@ -31,6 +36,8 @@ class Application(tk.Tk):
         self.entryA.pack()
         self.btn3 = tk.Button(self, text="Načíst graf", command=self.graf)
         self.btn3.pack()
+        self.btn3 = tk.Button(self, text="Play", command=self.play)
+        self.btn3.pack()
         self.btn = tk.Button(self, text="Konec", command=self.quit)
         self.btn.pack()
 
@@ -40,18 +47,45 @@ class Application(tk.Tk):
         self.amplituda = self.var_entryA.get()
         
         
-        t = plt.linspace(0, 10/self.frekvence, self.frekvence*10000)
-        x = self.amplituda * (plt.sin(2*pi*self.frekvence*t ))
+        self.t = np.linspace(0, 10/self.frekvence, self.frekvence*10000)
+        self.x = self.amplituda * (2*pi*self.frekvence*self.t )
+        self.signal = np.sin(self.x)
 
-        plt.plot(t,x)
-        plt.title("generování sihnálu")
-        plt.xlabel("t [s]")
-        plt.ylabel("u V]")
+
+        def norm(data):
+            min_v = min(data)
+            max_v = max(data)
+            return np.array([((x-min_v) / (max_v-min_v)) for x in data])*2.0-1
+
+        self.noise = 1*np.random.randn(*self.signal.shape)
+        self.dirty =  norm(self.signal + self.noise)
+
+        plt.plot(self.t,self.signal)
+        plt.title("Signál")
+        plt.xlabel("Time [s]")
+        plt.ylabel("U V]")
         plt.grid()
         plt.show()
 
+        self.sample_rate = 44100
+
+        self.signal *= 32767
+        self.signal = np.int16(self.signal)
+        wavfile.write("sound.wav", self.sample_rate,self.signal)
+        
+        
+        
+    def play(self):
+        pass
+
+
+
+
+
     def quit(self, event=None):
         super().quit()
+
+    
 
 
     
