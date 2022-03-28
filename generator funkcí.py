@@ -10,6 +10,9 @@ from pylab import linspace, pi, plot,sin,cos, show,grid,legend
 from os.path import basename, splitext
 from tkinter import *
 from scipy.io import wavfile
+from pydub import AudioSegment
+from pydub.playback import play
+
 
 
 
@@ -76,7 +79,10 @@ class Application(tk.Tk):
         
         
     def play(self):
-        pass
+        self.song = AudioSegment.from_wav("sound.wav")
+        play(self.song)
+
+        
 
 
 
